@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using Record_Shop.Data;
+using Record_Shop.Repositories;
+using Record_Shop.Services;
 using System;
 
 namespace Record_Shop
@@ -26,6 +28,11 @@ namespace Record_Shop
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
                 }
             });
+
+
+            builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+            builder.Services.AddScoped<IAlbumService, AlbumService>();
+
 
 
             builder.Services.AddControllers();
