@@ -91,5 +91,53 @@ namespace Record_Shop.Tests.RepositoryTests
             // Assert
             Assert.That(result, Is.Null);
         }
+
+        [Test]
+        public async Task AddAlbumAsync_AddsAlbumToDatabase_AndReturnsWithId()
+        {
+            // Arrange
+            var album = new Album { Title = "New Album", Artist = "New Artist", Genre = "New Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            // Act
+            var result = await _albumRepository.AddAlbumAsync(album);
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.GreaterThan(0));
+            Assert.That(result.Title, Is.EqualTo("New Album"));
+
+            // Verify it's actually in the database
+            var albumInDb = await _context.Albums.FindAsync(result.Id);
+            Assert.That(albumInDb, Is.Not.Null);
+            Assert.That(albumInDb.Title, Is.EqualTo("New Album"));
+
+        }
+
+        [Test]
+        public async Task AddAlbumAsync_AssignsUniqueIds_ToMultipleAlbums()
+        {
+            // Arrange
+            var album1 = new Album { Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2024, Price = 15.99m, Stock = 20 };
+            var album2 = new Album { Title = "Album 2", Artist = "Artist 2", Genre = "Genre 2", Year = 2024, Price = 15.99m, Stock = 20 };
+            // Act
+            var result1 = await _albumRepository.AddAlbumAsync(album1);
+            var result2 = await _albumRepository.AddAlbumAsync(album2);
+            // Assert
+            Assert.That(result1.Id, Is.GreaterThan(0));
+            Assert.That(result2.Id, Is.GreaterThan(0));
+            Assert.That(result1.Id, Is.Not.EqualTo(result2.Id));
+        }
+
+        [Test]
+        public async Task AddAlbumAsync_PersistsAlbumToDatabase()
+        {
+            // Arrange
+            var album = new Album { Title = "Persistent Album", Artist = "Persistent Artist", Genre = "Persistent Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            // Act
+            var result = await _albumRepository.AddAlbumAsync(album);
+            // Assert
+            var albums = await _context.Albums.ToListAsync();
+            Assert.That(albums.Count, Is.EqualTo(1));
+            Assert.That(albums.First().Title, Is.EqualTo("Persistent Album"));
+        }
+
     }
 }

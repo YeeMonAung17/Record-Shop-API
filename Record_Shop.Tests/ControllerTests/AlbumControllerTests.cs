@@ -64,5 +64,41 @@ namespace Record_Shop.Tests.ControllerTests
             //Assert
             Assert.That(result, Is.TypeOf<NotFoundResult>());
         }
+
+        [Test]
+        public async Task AddAlbum_ReturnsCreatedAtAction_WhenAlbumIsValid()
+        {
+            //Arrange
+            var album = new Album { Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var createdAlbum = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumServiceMoq.Setup(repo => repo.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(createdAlbum);
+            //Act
+            var result = await _albumController.AddAlbum(album);
+            var createdAtActionResult = (CreatedAtActionResult)result;
+            //Assert
+            Assert.That(createdAtActionResult, Is.Not.Null);
+            Assert.That(createdAtActionResult.StatusCode, Is.EqualTo(201));
+
+            var returnedAlbum = createdAtActionResult.Value as Album;
+            Assert.That(returnedAlbum, Is.Not.Null);
+            Assert.That(returnedAlbum.Id, Is.EqualTo(createdAlbum.Id));
+            Assert.That(returnedAlbum.Title, Is.EqualTo(createdAlbum.Title));
+        }
+        [Test]
+        public async Task AddAlbum_ReturnsBadRequest_WhenModelStateIsInvalid()
+        {
+            //Arrange
+            var album = new Album { Title = "Test",Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumController.ModelState.AddModelError("Title", "The Title field is required.");
+
+            //Act
+            var result = await _albumController.AddAlbum(album);
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+                var badRequestResult = result as BadRequestObjectResult;
+            Assert.That(badRequestResult, Is.Not.Null);
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
+        }
     }
 }
