@@ -33,7 +33,7 @@ namespace Record_Shop.Tests.ServiceTests
             var result = await _albumService.GetAllAlbumsAsync();
 
             //Assert
-            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result.Count(), Is.EqualTo(2));
             Assert.That(result.First().Title, Is.EqualTo("Album 1"));
             _albumRepositoryMoq.Verify(repo => repo.GetAllAlbumsAsync(), Times.Once);
 
@@ -51,5 +51,33 @@ namespace Record_Shop.Tests.ServiceTests
             Assert.That(result, Is.Empty);
             _albumRepositoryMoq.Verify(repo => repo.GetAllAlbumsAsync(), Times.Once);
         }
+
+        [Test]
+
+        public async Task GetAlbumByIdAsync_ReturnsAlbumId_WhenExists()
+        {
+            //Arrange
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(1)).ReturnsAsync(album);
+            //Act
+            var result = await _albumService.GetAlbumByIdAsync(1);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Title, Is.EqualTo("Album 1"));
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumByIdAsync(1), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAlbumByIdAsync_ReturnsNull_WhenNotExists()
+        {
+            //Arrange
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(1)).ReturnsAsync((Album?)null);
+            //Act
+            var result = await _albumService.GetAlbumByIdAsync(1);
+            //Assert
+            Assert.That(result, Is.Null);
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumByIdAsync(1), Times.Once);
+        }
     }
 }
+

@@ -57,5 +57,39 @@ namespace Record_Shop.Tests.RepositoryTests
             // Assert
             Assert.That(result, Is.Empty);
         }
+
+        [Test]
+        public async Task GetAlbumByIdAsync_ReturnsAlbumId_WhenExists()
+        {
+            // Arrange
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _context.Albums.Add(album);
+            await _context.SaveChangesAsync();
+            // Act
+            var result = await _albumRepository.GetAlbumByIdAsync(1);
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Title, Is.EqualTo("Album 1"));
+        }
+
+        [Test]
+        public async Task GetAlbumByIdAsync_ReturnsNull_WhenNotExists()
+        {
+            // Act
+            var result = await _albumRepository.GetAlbumByIdAsync(999);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-999)]
+        public async Task GetAlbumByIdAsync_ReturnsNull_WhenInvalidId(int invalidId)
+        {
+            // Act
+            var result = await _albumRepository.GetAlbumByIdAsync(invalidId);
+            // Assert
+            Assert.That(result, Is.Null);
+        }
     }
 }

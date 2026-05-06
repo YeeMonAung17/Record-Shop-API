@@ -37,5 +37,32 @@ namespace Record_Shop.Tests.ControllerTests
             var returnedAlbums = okResult.Value as List<Album>;
             Assert.That(returnedAlbums, Is.EquivalentTo(albums));
         }
+
+        [Test]
+        public async Task GetAlbumByIdAsync_ReturnsAlbum_WhenExists()
+        {
+            //Arrange
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumServiceMoq.Setup(repo => repo.GetAlbumByIdAsync(1)).ReturnsAsync(album);
+            //Act
+            var result = await _albumController.GetAlbumById(1);
+            var okResult = (OkObjectResult)result;
+            //Assert
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            var returnedAlbum = okResult.Value as Album;
+            Assert.That(returnedAlbum, Is.EqualTo(album));
+        }
+
+        [Test]
+
+        public async Task GetAlbumByIdAsync_ReturnsNotFound_WhenDoesNotExist()
+        {
+            //Arrange
+            _albumServiceMoq.Setup(repo => repo.GetAlbumByIdAsync(1)).ReturnsAsync((Album?)null);
+            //Act
+            var result = await _albumController.GetAlbumById(1);
+            //Assert
+            Assert.That(result, Is.TypeOf<NotFoundResult>());
+        }
     }
 }
