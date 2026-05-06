@@ -22,11 +22,10 @@ namespace Record_Shop.Services
             return await _albumRepository.GetAlbumByIdAsync(id);
         }
 
-        //public async Task<Album> AddAlbumAsync(Album album)
-        //{
-        //    await _albumRepository.GetAlbumByIdAsync(album);
-        //    return album;
-        //}
+        public async Task<Album> AddAlbumAsync(Album album)
+        {
+           return await _albumRepository.AddAlbumAsync(album);
+        }
 
 
         //public async Task<Album?> UpdateAlbumAsync(int id, Album album)

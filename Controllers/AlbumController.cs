@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Record_Shop.Models;
 using Record_Shop.Services;
 
 namespace Record_Shop.Controllers
@@ -21,16 +22,27 @@ namespace Record_Shop.Controllers
             return Ok(albums.ToList());
         }
 
-        [HttpGet ("{id}")]
+        [HttpGet("{id}")]
 
         public async Task<IActionResult> GetAlbumById(int id)
         {
-                       var album = await _albumService.GetAlbumByIdAsync(id);
+            var album = await _albumService.GetAlbumByIdAsync(id);
             if (album == null)
             {
                 return NotFound();
             }
             return Ok(album);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAlbum([FromBody] Album album)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var createdAlbum = await _albumService.AddAlbumAsync(album);
+            return CreatedAtAction(nameof(GetAlbumById), new { id = createdAlbum.Id }, createdAlbum);
         }
     }
 }
