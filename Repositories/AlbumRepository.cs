@@ -19,11 +19,12 @@ namespace Record_Shop.Repositories
                 return await _recordDbContext.Albums.ToListAsync();
         }
 
-        //public async Task<Album> GetAlbumByIdAsync(int id)
-        //{
-        //    using (_recordDbContext)
-        //        return await _recordDbContext.Albums.FindAsync(id);
-        //}
+        public async Task<Album?> GetAlbumByIdAsync(int id)
+        {
+
+            var album = await _recordDbContext.Albums.FirstOrDefaultAsync(a => a.Id == id);
+            return album;
+        }
 
         //public async Task AddAlbumAsync(Album album)
         //{

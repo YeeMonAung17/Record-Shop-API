@@ -17,14 +17,14 @@ namespace Record_Shop.Services
            return await _albumRepository.GetAllAlbumsAsync();
         }
 
-        //public async Task<Album?> GetAlbumByIdAsync(int id)
-        //{
-        //    return await _albumRepository.GetAlbumByIdAsync(id);
-        //}   
+        public async Task<Album?> GetAlbumByIdAsync(int id)
+        {
+            return await _albumRepository.GetAlbumByIdAsync(id);
+        }
 
         //public async Task<Album> AddAlbumAsync(Album album)
         //{
-        //    await _albumRepository.AddAlbumAsync(album);
+        //    await _albumRepository.GetAlbumByIdAsync(album);
         //    return album;
         //}
 

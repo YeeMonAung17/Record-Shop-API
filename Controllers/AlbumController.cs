@@ -20,5 +20,17 @@ namespace Record_Shop.Controllers
             var albums = await _albumService.GetAllAlbumsAsync();
             return Ok(albums.ToList());
         }
+
+        [HttpGet ("{id}")]
+
+        public async Task<IActionResult> GetAlbumById(int id)
+        {
+                       var album = await _albumService.GetAlbumByIdAsync(id);
+            if (album == null)
+            {
+                return NotFound();
+            }
+            return Ok(album);
+        }
     }
 }
