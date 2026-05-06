@@ -138,7 +138,20 @@ namespace Record_Shop.Tests.ServiceTests
             _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Never);
         }
 
-
+        [Test]
+        public async Task DeleteAlbumAsync_ReturnsTrue_WhenAlbumExists()
+        {
+            //Arrange
+            int albumId = 1;
+            var album = new Album { Id = albumId, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(albumId)).ReturnsAsync(album);
+            _albumRepositoryMoq.Setup(repo => repo.DeleteAlbumAsync(albumId)).ReturnsAsync(true);
+            //Act
+            var result = await _albumService.DeleteAlbumAsync(albumId);
+            //Assert
+            Assert.That(result, Is.True);
+            _albumRepositoryMoq.Verify(repo => repo.DeleteAlbumAsync(albumId), Times.Once);
+        }
 
     }
     }

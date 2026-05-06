@@ -186,5 +186,21 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(result.Stock, Is.EqualTo(15));
         }
 
+        [Test]
+        public async Task DeleteAlbumAsync_ShouldRemoveRecordFromDb()
+        {
+            //Arrange
+            var album = new Album { Title = "Album to Delete", Artist = "Artist to Delete", Genre = "Genre to Delete", Year = 2024, Price = 15.99m, Stock = 20 };
+            _context.Albums.Add(album);
+            await _context.SaveChangesAsync();
+
+            int albumId = album.Id;
+            //Act
+            await _albumRepository.DeleteAlbumAsync(albumId);
+            //Assert
+            var albumInDb = await _context.Albums.FindAsync(albumId);
+            Assert.That(albumInDb, Is.Null);
+
+        }
     }
 }

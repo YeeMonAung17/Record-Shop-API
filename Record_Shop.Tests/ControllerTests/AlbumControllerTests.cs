@@ -155,5 +155,38 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(notFoundResult, Is.Not.Null);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
         }
+
+        [Test]
+        public async Task DeleteAlbum_Returns204NoContent_WhenSuccessful()
+        {
+            //Arrange
+            int albumId = 1;
+            _albumServiceMoq.Setup(repo => repo.DeleteAlbumAsync(albumId)).ReturnsAsync(true);
+
+            //Act
+            var result = await _albumController.DeleteAlbum(albumId);
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
+            var noContentResult = result as NoContentResult;
+            Assert.That(noContentResult, Is.Not.Null);
+            Assert.That(noContentResult.StatusCode, Is.EqualTo(204));
+        }
+
+        [Test]
+        public async Task DeleteAlbum_Returns404NotFound_WhenAlbumMissing()
+        {
+            //Arrange
+            _albumServiceMoq.Setup(repo => repo.DeleteAlbumAsync(99)).ReturnsAsync(false);
+
+            //Act
+            var result = await _albumController.DeleteAlbum(99);
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            var notFoundResult = result as NotFoundResult;
+            Assert.That(notFoundResult, Is.Not.Null);
+            Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
+        }
     }
 }
