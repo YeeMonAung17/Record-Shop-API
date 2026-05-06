@@ -8,6 +8,6 @@ namespace Record_Shop.Repositories
         Task<Album?> GetAlbumByIdAsync(int id);
         Task<Album> AddAlbumAsync(Album album);
         Task<Album> UpdateAlbumAsync(Album album);
-        //Task<bool> DeleteAlbumAsync(int id);
+        Task<bool> DeleteAlbumAsync(int id);
     }
 }

@@ -59,5 +59,16 @@ namespace Record_Shop.Controllers
             }
             return Ok(updatedAlbum);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAlbum(int id)
+        {
+            var result = await _albumService.DeleteAlbumAsync(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }

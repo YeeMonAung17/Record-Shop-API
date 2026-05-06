@@ -48,15 +48,10 @@ namespace Record_Shop.Services
         }
 
 
-        //public async Task<bool> DeleteAlbumAsync(int id)
-        //{
-        //    var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
-        //    if (existingAlbum == null)
-        //    {
-        //        return false;
-        //    }
-        //    await _albumRepository.DeleteAlbumAsync(id);
-        //    return true;
-        //}
+        public async Task<bool> DeleteAlbumAsync(int id)
+        {
+           
+            return await _albumRepository.DeleteAlbumAsync(id);
+        }
     }
 }

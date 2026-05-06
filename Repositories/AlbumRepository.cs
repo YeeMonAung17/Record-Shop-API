@@ -43,17 +43,19 @@ namespace Record_Shop.Repositories
             
         }
 
-        //public async Task DeleteAlbumAsync(int id)
-        //{
-        //    using (_recordDbContext)
-        //    {
-        //        var album = await _recordDbContext.Albums.FindAsync(id);
-        //        if (album != null)
-        //        {
-        //            _recordDbContext.Albums.Remove(album);
-        //            await _recordDbContext.SaveChangesAsync();
-        //        }
-        //    }
-        //}
+        public async Task<bool> DeleteAlbumAsync(int id)
+        {
+            
+                var album = await _recordDbContext.Albums.FindAsync(id);
+                if (album == null)
+                {
+                    return false;
+                }
+
+            _recordDbContext.Albums.Remove(album);
+            await _recordDbContext.SaveChangesAsync();
+            return true;
+            
+        }
     }
 }
