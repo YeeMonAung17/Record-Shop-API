@@ -17,43 +17,43 @@ namespace Record_Shop.Services
            return await _albumRepository.GetAllAlbumsAsync();
         }
 
-        public async Task<Album?> GetAlbumByIdAsync(int id)
-        {
-            return await _albumRepository.GetAlbumByIdAsync(id);
-        }   
+        //public async Task<Album?> GetAlbumByIdAsync(int id)
+        //{
+        //    return await _albumRepository.GetAlbumByIdAsync(id);
+        //}   
 
-        public async Task<Album> AddAlbumAsync(Album album)
-        {
-            await _albumRepository.AddAlbumAsync(album);
-            return album;
-        }
-
-
-        public async Task<Album?> UpdateAlbumAsync(int id, Album album)
-        {
-            var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
-            if (existingAlbum == null)
-            {
-                return null;
-            }
-            existingAlbum.Title = album.Title;
-            existingAlbum.Artist = album.Artist;
-            existingAlbum.ReleaseDate = album.ReleaseDate;
-            existingAlbum.Genre = album.Genre;
-            await _albumRepository.UpdateAlbumAsync(existingAlbum);
-            return existingAlbum;
-        }
+        //public async Task<Album> AddAlbumAsync(Album album)
+        //{
+        //    await _albumRepository.AddAlbumAsync(album);
+        //    return album;
+        //}
 
 
-        public async Task<bool> DeleteAlbumAsync(int id)
-        {
-            var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
-            if (existingAlbum == null)
-            {
-                return false;
-            }
-            await _albumRepository.DeleteAlbumAsync(id);
-            return true;
-        }
+        //public async Task<Album?> UpdateAlbumAsync(int id, Album album)
+        //{
+        //    var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
+        //    if (existingAlbum == null)
+        //    {
+        //        return null;
+        //    }
+        //    existingAlbum.Title = album.Title;
+        //    existingAlbum.Artist = album.Artist;
+        //    existingAlbum.ReleaseDate = album.ReleaseDate;
+        //    existingAlbum.Genre = album.Genre;
+        //    await _albumRepository.UpdateAlbumAsync(existingAlbum);
+        //    return existingAlbum;
+        //}
+
+
+        //public async Task<bool> DeleteAlbumAsync(int id)
+        //{
+        //    var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
+        //    if (existingAlbum == null)
+        //    {
+        //        return false;
+        //    }
+        //    await _albumRepository.DeleteAlbumAsync(id);
+        //    return true;
+        //}
     }
 }

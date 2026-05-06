@@ -1,12 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Record_Shop.Services;
 
 namespace Record_Shop.Controllers
 {
-    public class AlbumController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AlbumController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IAlbumService _albumService;
+
+        public AlbumController(IAlbumService albumService)
         {
-            return View();
+            _albumService = albumService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAlbums()
+        {
+            var albums = await _albumService.GetAllAlbumsAsync();
+            return Ok(albums.ToList());
         }
     }
 }
