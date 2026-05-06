@@ -88,7 +88,7 @@ namespace Record_Shop.Tests.ControllerTests
         public async Task AddAlbum_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             //Arrange
-            var album = new Album { Title = "Test",Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Title = "Test", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
             _albumController.ModelState.AddModelError("Title", "The Title field is required.");
 
             //Act
@@ -96,9 +96,64 @@ namespace Record_Shop.Tests.ControllerTests
 
             //Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-                var badRequestResult = result as BadRequestObjectResult;
+            var badRequestResult = result as BadRequestObjectResult;
             Assert.That(badRequestResult, Is.Not.Null);
             Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
+        }
+        [Test]
+        public async Task UpdateAlbum_Returns201Created_WhenUpdateIsSuccessful()
+        {
+            //Arrange
+            int albumId = 1;
+            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15.99m, Stock = 5 };
+            _albumServiceMoq.Setup(repo => repo.UpdateAlbumAsync(albumId, It.IsAny<Album>())).ReturnsAsync(updatedAlbum);
+            //Act
+            var result = await _albumController.UpdateAlbum(albumId, updatedAlbum);
+            //Assert
+
+            Assert.That(result, Is.InstanceOf<ObjectResult>());
+            var actionResult = result as ObjectResult;
+            Assert.That(actionResult.StatusCode, Is.EqualTo(200));
+
+            var actualAlbum = actionResult.Value as Album;
+            Assert.That(actualAlbum.Title, Is.EqualTo(updatedAlbum.Title));
+
+
+        }
+        [Test]
+        public async Task UpdateAlbum_Returns400BadRequest_WhenModelStateIsInvalid()
+        {
+            //Arrange
+            int albumId = 1;
+            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15.99m, Stock = 5 };
+            _albumController.ModelState.AddModelError("Title", "The Title field is required.");
+
+            //Act
+            var result = await _albumController.UpdateAlbum(albumId, updatedAlbum);
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            var badRequestResult = result as BadRequestObjectResult;
+            Assert.That(badRequestResult, Is.Not.Null);
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
+
+        }
+        [Test]
+        public async Task UpdateAlbum_Returns404NotFound_WhenAlbumDoesNotExist()
+        {
+            //Arrange
+            int albumId = 1;
+            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15.99m, Stock = 5 };
+            _albumServiceMoq.Setup(repo => repo.UpdateAlbumAsync(albumId, It.IsAny<Album>())).ReturnsAsync((Album)null);
+
+            //Act
+            var result = await _albumController.UpdateAlbum(albumId, updatedAlbum);
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            var notFoundResult = result as NotFoundResult;
+            Assert.That(notFoundResult, Is.Not.Null);
+            Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
         }
     }
 }

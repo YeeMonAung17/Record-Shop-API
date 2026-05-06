@@ -21,6 +21,7 @@ namespace Record_Shop.Tests.RepositoryTests
         [SetUp]
         public void Setup()
         {
+            //fake in-memory database for testing
             var options = new DbContextOptionsBuilder<RecordDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDb_" + Guid.NewGuid())
                 .Options;
@@ -137,6 +138,52 @@ namespace Record_Shop.Tests.RepositoryTests
             var albums = await _context.Albums.ToListAsync();
             Assert.That(albums.Count, Is.EqualTo(1));
             Assert.That(albums.First().Title, Is.EqualTo("Persistent Album"));
+        }
+        [Test]
+        public async Task UpdateAlbumAsync_ShouldModifyExistingRecord()
+        {
+            //Arrange
+            var myAlbum = new Album { Title ="Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            _context.Albums.Add(myAlbum);
+            await _context.SaveChangesAsync();
+
+            _context.Entry(myAlbum).State = EntityState.Detached;
+
+            //Act
+            var updatedAlbum = new Album { Id = myAlbum.Id, Title ="Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19.99m, Stock = 15 };
+                        await _albumRepository.UpdateAlbumAsync(updatedAlbum);
+
+            //Assert
+            var albumInDb = await _context.Albums.FindAsync(myAlbum.Id);
+            Assert.That(albumInDb, Is.Not.Null);
+            Assert.That(albumInDb.Title.Trim(), Is.EqualTo("Updated Album"));
+            Assert.That(albumInDb.Artist.Trim(), Is.EqualTo("Updated Artist"));
+            Assert.That(albumInDb.Genre.Trim(), Is.EqualTo("Updated Genre"));
+            Assert.That(albumInDb.Year, Is.EqualTo(2025));
+            Assert.That(albumInDb.Price, Is.EqualTo(19.99m));
+            Assert.That(albumInDb.Stock, Is.EqualTo(15));
+        }
+
+        [Test]
+        public async Task UpdateAlbumAsync_ShouldReturnUpdatedAlbumObject()
+        {
+            //Arrange
+            var myAlbum = new Album { Title = "Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            _context.Albums.Add(myAlbum);
+            await _context.SaveChangesAsync();
+            _context.Entry(myAlbum).State = EntityState.Detached;
+            //Act
+            var updatedAlbum = new Album { Id = myAlbum.Id, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19.99m, Stock = 15 };
+            var result = await _albumRepository.UpdateAlbumAsync(updatedAlbum);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Id, Is.EqualTo(myAlbum.Id));
+            Assert.That(result.Title, Is.EqualTo("Updated Album"));
+            Assert.That(result.Artist, Is.EqualTo("Updated Artist"));
+            Assert.That(result.Genre, Is.EqualTo("Updated Genre"));
+            Assert.That(result.Year, Is.EqualTo(2025));
+            Assert.That(result.Price, Is.EqualTo(19.99m));
+            Assert.That(result.Stock, Is.EqualTo(15));
         }
 
     }

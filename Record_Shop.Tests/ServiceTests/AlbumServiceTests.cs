@@ -107,7 +107,39 @@ namespace Record_Shop.Tests.ServiceTests
             _albumRepositoryMoq.Verify(repo => repo.AddAlbumAsync(It.IsAny<Album>()), Times.Once);
         }
 
-       
+        [Test]
+        public async Task UpdateAlbum_WhenAlbumExists_ReturnsUpdatedAlbum()
+        {
+            //Arrange
+            int albumId = 1;
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var updatedAlbum = new Album { Id = 1, Title = "Updated Album", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(albumId)).ReturnsAsync(album);
+            _albumRepositoryMoq.Setup(repo => repo.UpdateAlbumAsync(It.IsAny<Album>())).ReturnsAsync(updatedAlbum);
+            //Act
+            var result = await _albumService.UpdateAlbumAsync(albumId, updatedAlbum);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Title, Is.EqualTo("Updated Album"));
+            _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateAlbum_WhenAlbumDoesNotExist_ReturnsNull()
+        {
+            //Arrange
+            int id = 999; // Non-existing ID
+            var album = new Album { Id = id, Title = "Non-existing Album", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(id)).ReturnsAsync((Album?)null);
+            //Act
+            var result = await _albumService.UpdateAlbumAsync(id, album);
+            //Assert
+            Assert.That(result, Is.Null);
+            _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Never);
+        }
+
+
+
     }
     }
 

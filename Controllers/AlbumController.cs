@@ -44,5 +44,20 @@ namespace Record_Shop.Controllers
             var createdAlbum = await _albumService.AddAlbumAsync(album);
             return CreatedAtAction(nameof(GetAlbumById), new { id = createdAlbum.Id }, createdAlbum);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAlbum(int id, [FromBody] Album album)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var updatedAlbum = await _albumService.UpdateAlbumAsync(id, album);
+            if (updatedAlbum == null)
+            {
+                return NotFound();
+            }
+            return Ok(updatedAlbum);
+        }
     }
 }

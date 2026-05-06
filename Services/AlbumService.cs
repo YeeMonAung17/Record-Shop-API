@@ -28,20 +28,24 @@ namespace Record_Shop.Services
         }
 
 
-        //public async Task<Album?> UpdateAlbumAsync(int id, Album album)
-        //{
-        //    var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
-        //    if (existingAlbum == null)
-        //    {
-        //        return null;
-        //    }
-        //    existingAlbum.Title = album.Title;
-        //    existingAlbum.Artist = album.Artist;
-        //    existingAlbum.ReleaseDate = album.ReleaseDate;
-        //    existingAlbum.Genre = album.Genre;
-        //    await _albumRepository.UpdateAlbumAsync(existingAlbum);
-        //    return existingAlbum;
-        //}
+        public async Task<Album?> UpdateAlbumAsync(int id, Album album)
+        {
+            
+            var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
+            if (existingAlbum == null)
+            {
+                return null;
+            }           
+           
+            existingAlbum.Title = album.Title;
+            existingAlbum.Artist = album.Artist;
+            existingAlbum.Genre = album.Genre;
+            existingAlbum.Year = album.Year;
+            existingAlbum.Price = album.Price;
+            existingAlbum.Stock = album.Stock;
+            await _albumRepository.UpdateAlbumAsync(existingAlbum);
+            return existingAlbum;
+        }
 
 
         //public async Task<bool> DeleteAlbumAsync(int id)

@@ -35,14 +35,13 @@ namespace Record_Shop.Repositories
 
         }
 
-        //public async Task UpdateAlbumAsync(Album album)
-        //{
-        //    using (_recordDbContext)
-        //    {
-        //        _recordDbContext.Albums.Update(album);
-        //        await _recordDbContext.SaveChangesAsync();
-        //    }
-        //}
+        public async Task<Album> UpdateAlbumAsync(Album album)
+        {
+            _recordDbContext.Albums.Update(album);
+            await _recordDbContext.SaveChangesAsync();
+            return album;
+            
+        }
 
         //public async Task DeleteAlbumAsync(int id)
         //{
