@@ -16,18 +16,10 @@ namespace Record_Shop
             var builder = WebApplication.CreateBuilder(args);
 
             // Register  DbContext — uses in-memory when in Development
+           
             builder.Services.AddDbContext<RecordDbContext>(options =>
-            {
-                if (builder.Environment.IsDevelopment())
-                {
-                    options.UseInMemoryDatabase("MyAppDevDb");
-                }
-                else
-                {
-                    //  real DB connection string goes here for Production
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-                }
-            });
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
             builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();

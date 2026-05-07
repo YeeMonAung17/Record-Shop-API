@@ -9,6 +9,10 @@ namespace Record_Shop.Data
         public DbSet<Album> Albums { get; set; }
 
         public RecordDbContext(DbContextOptions<RecordDbContext> options) : base(options) { }
-        
+
+      
+
     }
+
+
 }
