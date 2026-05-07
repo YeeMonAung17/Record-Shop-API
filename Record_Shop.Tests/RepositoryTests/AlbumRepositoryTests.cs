@@ -40,8 +40,8 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task GetAllAlbumsAsync_ReturnsAllAlbums()
         {
             //Arrange
-            _context.Albums.Add(new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 });
-            _context.Albums.Add(new Album { Id = 2, Title = "Album 2", Artist = "Artist 2", Genre = "Genre 2", Year = 2023, Price = 14.99m, Stock = 12 });
+            _context.Albums.Add(new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 });
+            _context.Albums.Add(new Album { Id = 2, Title = "Album 2", Artist = "Artist 2", Genre = "Genre 2", Year = 2023, Price = 14, Stock = 12 });
             await _context.SaveChangesAsync();
             // Act
             var result = await _albumRepository.GetAllAlbumsAsync();
@@ -63,7 +63,7 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task GetAlbumByIdAsync_ReturnsAlbumId_WhenExists()
         {
             // Arrange
-            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _context.Albums.Add(album);
             await _context.SaveChangesAsync();
             // Act
@@ -97,7 +97,7 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task AddAlbumAsync_AddsAlbumToDatabase_AndReturnsWithId()
         {
             // Arrange
-            var album = new Album { Title = "New Album", Artist = "New Artist", Genre = "New Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            var album = new Album { Title = "New Album", Artist = "New Artist", Genre = "New Genre", Year = 2024, Price = 15, Stock = 20 };
             // Act
             var result = await _albumRepository.AddAlbumAsync(album);
             // Assert
@@ -116,8 +116,8 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task AddAlbumAsync_AssignsUniqueIds_ToMultipleAlbums()
         {
             // Arrange
-            var album1 = new Album { Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2024, Price = 15.99m, Stock = 20 };
-            var album2 = new Album { Title = "Album 2", Artist = "Artist 2", Genre = "Genre 2", Year = 2024, Price = 15.99m, Stock = 20 };
+            var album1 = new Album { Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2024, Price = 15, Stock = 20 };
+            var album2 = new Album { Title = "Album 2", Artist = "Artist 2", Genre = "Genre 2", Year = 2024, Price = 15, Stock = 20 };
             // Act
             var result1 = await _albumRepository.AddAlbumAsync(album1);
             var result2 = await _albumRepository.AddAlbumAsync(album2);
@@ -131,7 +131,7 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task AddAlbumAsync_PersistsAlbumToDatabase()
         {
             // Arrange
-            var album = new Album { Title = "Persistent Album", Artist = "Persistent Artist", Genre = "Persistent Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            var album = new Album { Title = "Persistent Album", Artist = "Persistent Artist", Genre = "Persistent Genre", Year = 2024, Price = 15, Stock = 20 };
             // Act
             var result = await _albumRepository.AddAlbumAsync(album);
             // Assert
@@ -143,14 +143,14 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task UpdateAlbumAsync_ShouldModifyExistingRecord()
         {
             //Arrange
-            var myAlbum = new Album { Title ="Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            var myAlbum = new Album { Title ="Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15, Stock = 20 };
             _context.Albums.Add(myAlbum);
             await _context.SaveChangesAsync();
 
             _context.Entry(myAlbum).State = EntityState.Detached;
 
             //Act
-            var updatedAlbum = new Album { Id = myAlbum.Id, Title ="Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19.99m, Stock = 15 };
+            var updatedAlbum = new Album { Id = myAlbum.Id, Title ="Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19, Stock = 15 };
                         await _albumRepository.UpdateAlbumAsync(updatedAlbum);
 
             //Assert
@@ -168,12 +168,12 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task UpdateAlbumAsync_ShouldReturnUpdatedAlbumObject()
         {
             //Arrange
-            var myAlbum = new Album { Title = "Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15.99m, Stock = 20 };
+            var myAlbum = new Album { Title = "Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15, Stock = 20 };
             _context.Albums.Add(myAlbum);
             await _context.SaveChangesAsync();
             _context.Entry(myAlbum).State = EntityState.Detached;
             //Act
-            var updatedAlbum = new Album { Id = myAlbum.Id, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19.99m, Stock = 15 };
+            var updatedAlbum = new Album { Id = myAlbum.Id, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19, Stock = 15 };
             var result = await _albumRepository.UpdateAlbumAsync(updatedAlbum);
             //Assert
             Assert.That(result, Is.Not.Null);
@@ -190,7 +190,7 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task DeleteAlbumAsync_ShouldRemoveRecordFromDb()
         {
             //Arrange
-            var album = new Album { Title = "Album to Delete", Artist = "Artist to Delete", Genre = "Genre to Delete", Year = 2024, Price = 15.99m, Stock = 20 };
+            var album = new Album { Title = "Album to Delete", Artist = "Artist to Delete", Genre = "Genre to Delete", Year = 2024, Price = 15, Stock = 20 };
             _context.Albums.Add(album);
             await _context.SaveChangesAsync();
 

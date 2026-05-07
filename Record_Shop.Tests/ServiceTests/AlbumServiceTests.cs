@@ -24,8 +24,8 @@ namespace Record_Shop.Tests.ServiceTests
             //Arrange
             var albums = new List<Album>
             {
-                new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021 , Price = 12.99m, Stock = 10 },
-                new Album { Id = 2, Title = "Album 2", Artist = "Artist 2",Genre = "Genre 2", Year = 2023, Price = 14.99m, Stock = 12 }
+                new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021 , Price = 12, Stock = 10 },
+                new Album { Id = 2, Title = "Album 2", Artist = "Artist 2",Genre = "Genre 2", Year = 2023, Price = 14, Stock = 12 }
             };
             _albumRepositoryMoq.Setup(repo => repo.GetAllAlbumsAsync()).ReturnsAsync(albums);
 
@@ -57,7 +57,7 @@ namespace Record_Shop.Tests.ServiceTests
         public async Task GetAlbumByIdAsync_ReturnsAlbumId_WhenExists()
         {
             //Arrange
-            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(1)).ReturnsAsync(album);
             //Act
             var result = await _albumService.GetAlbumByIdAsync(1);
@@ -83,7 +83,7 @@ namespace Record_Shop.Tests.ServiceTests
         public async Task AddAlbumAsync_ReturnsAddedAlbum()
         {
             //Arrange
-            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
 
             var addedAlbum = new Album
             {
@@ -112,8 +112,8 @@ namespace Record_Shop.Tests.ServiceTests
         {
             //Arrange
             int albumId = 1;
-            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
-            var updatedAlbum = new Album { Id = 1, Title = "Updated Album", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
+            var updatedAlbum = new Album { Id = 1, Title = "Updated Album", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(albumId)).ReturnsAsync(album);
             _albumRepositoryMoq.Setup(repo => repo.UpdateAlbumAsync(It.IsAny<Album>())).ReturnsAsync(updatedAlbum);
             //Act
@@ -129,7 +129,7 @@ namespace Record_Shop.Tests.ServiceTests
         {
             //Arrange
             int id = 999; // Non-existing ID
-            var album = new Album { Id = id, Title = "Non-existing Album", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = id, Title = "Non-existing Album", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(id)).ReturnsAsync((Album?)null);
             //Act
             var result = await _albumService.UpdateAlbumAsync(id, album);
@@ -143,7 +143,7 @@ namespace Record_Shop.Tests.ServiceTests
         {
             //Arrange
             int albumId = 1;
-            var album = new Album { Id = albumId, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = albumId, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(albumId)).ReturnsAsync(album);
             _albumRepositoryMoq.Setup(repo => repo.DeleteAlbumAsync(albumId)).ReturnsAsync(true);
             //Act

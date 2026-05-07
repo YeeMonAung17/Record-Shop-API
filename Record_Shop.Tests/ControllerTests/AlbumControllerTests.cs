@@ -24,8 +24,8 @@ namespace Record_Shop.Tests.ControllerTests
             //Arrange
             var albums = new List<Album>
             {
-                new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021 , Price = 12.99m, Stock = 10 },
-                new Album { Id = 2, Title = "Album 2", Artist = "Artist 2",Genre = "Genre 2", Year = 2023, Price = 14.99m, Stock = 12 }
+                new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021 , Price = 12, Stock = 10 },
+                new Album { Id = 2, Title = "Album 2", Artist = "Artist 2",Genre = "Genre 2", Year = 2023, Price = 14, Stock = 12 }
             };
             _albumServiceMoq.Setup(repo => repo.GetAllAlbumsAsync()).ReturnsAsync(albums);
 
@@ -42,7 +42,7 @@ namespace Record_Shop.Tests.ControllerTests
         public async Task GetAlbumByIdAsync_ReturnsAlbum_WhenExists()
         {
             //Arrange
-            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumServiceMoq.Setup(repo => repo.GetAlbumByIdAsync(1)).ReturnsAsync(album);
             //Act
             var result = await _albumController.GetAlbumById(1);
@@ -69,8 +69,8 @@ namespace Record_Shop.Tests.ControllerTests
         public async Task AddAlbum_ReturnsCreatedAtAction_WhenAlbumIsValid()
         {
             //Arrange
-            var album = new Album { Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
-            var createdAlbum = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
+            var createdAlbum = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumServiceMoq.Setup(repo => repo.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(createdAlbum);
             //Act
             var result = await _albumController.AddAlbum(album);
@@ -88,7 +88,7 @@ namespace Record_Shop.Tests.ControllerTests
         public async Task AddAlbum_ReturnsBadRequest_WhenModelStateIsInvalid()
         {
             //Arrange
-            var album = new Album { Title = "Test", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12.99m, Stock = 10 };
+            var album = new Album { Title = "Test", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
             _albumController.ModelState.AddModelError("Title", "The Title field is required.");
 
             //Act
@@ -105,7 +105,7 @@ namespace Record_Shop.Tests.ControllerTests
         {
             //Arrange
             int albumId = 1;
-            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15.99m, Stock = 5 };
+            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15, Stock = 5 };
             _albumServiceMoq.Setup(repo => repo.UpdateAlbumAsync(albumId, It.IsAny<Album>())).ReturnsAsync(updatedAlbum);
             //Act
             var result = await _albumController.UpdateAlbum(albumId, updatedAlbum);
@@ -125,7 +125,7 @@ namespace Record_Shop.Tests.ControllerTests
         {
             //Arrange
             int albumId = 1;
-            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15.99m, Stock = 5 };
+            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15, Stock = 5 };
             _albumController.ModelState.AddModelError("Title", "The Title field is required.");
 
             //Act
@@ -143,7 +143,7 @@ namespace Record_Shop.Tests.ControllerTests
         {
             //Arrange
             int albumId = 1;
-            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15.99m, Stock = 5 };
+            var updatedAlbum = new Album { Id = albumId, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2022, Price = 15, Stock = 5 };
             _albumServiceMoq.Setup(repo => repo.UpdateAlbumAsync(albumId, It.IsAny<Album>())).ReturnsAsync((Album)null);
 
             //Act
