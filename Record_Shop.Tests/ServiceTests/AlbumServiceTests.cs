@@ -87,12 +87,12 @@ namespace Record_Shop.Tests.ServiceTests
 
             var addedAlbum = new Album
             {
-                Id = 1,  
+                Id = 1,
                 Title = "Album 1",
                 Artist = "Artist 1",
                 Genre = "Genre 1",
                 Year = 2021,
-                Price = 12.99m,
+                Price = 13,
                 Stock = 10
             };
 
@@ -152,7 +152,56 @@ namespace Record_Shop.Tests.ServiceTests
             Assert.That(result, Is.True);
             _albumRepositoryMoq.Verify(repo => repo.DeleteAlbumAsync(albumId), Times.Once);
         }
+        [Test]
+        public async Task GetAlbumsByArtistAsync_ShouldReturnFilteredAlbums()
+        {
+            //Arrange
+            var artistName = "Taylor Swift";
+            var fakeAlbums = new List<Album>
+            {
+                new Album { Id = 1, Title = "Album 1", Artist = "Taylor Swift", Genre = "Pop", Year = 2020, Price = 15, Stock = 5 },
+                new Album { Id = 2, Title = "Album 2", Artist = "Taylor Swift", Genre = "Pop", Year = 2021, Price = 16, Stock = 3 }
+            };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumsByArtistAsync(artistName)).ReturnsAsync(fakeAlbums);
 
+            //Act
+            var result = await _albumService.GetAlbumsByArtistAsync(artistName);
+
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Count(), Is.EqualTo(2));
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumsByArtistAsync(artistName), Times.Once);
+
+        }
+
+        [Test]
+        public async Task GetAlbumsByArtistAsync_ShouldReturnEmptyList_WhenNoAlbumsFound()
+        {
+            //Arrange
+            var artistName = "NonExistingArtist";
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumsByArtistAsync(artistName)).ReturnsAsync(new List<Album>());
+            //Act
+            var result = await _albumService.GetAlbumsByArtistAsync(artistName);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Empty);
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumsByArtistAsync(artistName), Times.Once);
+        }
+
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public async Task GetAlbumsByArtistAsync_ShouldThrowException_WhenInvalidArtistName(string invalidArtistName)
+        {
+            //Arrange
+            var service = new AlbumService(_albumRepositoryMoq.Object);
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () => await service.GetAlbumsByArtistAsync(invalidArtistName));
+
+            //Assert
+            _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Never);
+
+        }
     }
+
     }
 

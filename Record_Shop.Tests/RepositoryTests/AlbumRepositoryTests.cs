@@ -143,15 +143,15 @@ namespace Record_Shop.Tests.RepositoryTests
         public async Task UpdateAlbumAsync_ShouldModifyExistingRecord()
         {
             //Arrange
-            var myAlbum = new Album { Title ="Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15, Stock = 20 };
+            var myAlbum = new Album { Title = "Original Album", Artist = "Original Artist", Genre = "Original Genre", Year = 2024, Price = 15, Stock = 20 };
             _context.Albums.Add(myAlbum);
             await _context.SaveChangesAsync();
 
             _context.Entry(myAlbum).State = EntityState.Detached;
 
             //Act
-            var updatedAlbum = new Album { Id = myAlbum.Id, Title ="Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19, Stock = 15 };
-                        await _albumRepository.UpdateAlbumAsync(updatedAlbum);
+            var updatedAlbum = new Album { Id = myAlbum.Id, Title = "Updated Album", Artist = "Updated Artist", Genre = "Updated Genre", Year = 2025, Price = 19, Stock = 15 };
+            await _albumRepository.UpdateAlbumAsync(updatedAlbum);
 
             //Assert
             var albumInDb = await _context.Albums.FindAsync(myAlbum.Id);
@@ -160,7 +160,7 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(albumInDb.Artist.Trim(), Is.EqualTo("Updated Artist"));
             Assert.That(albumInDb.Genre.Trim(), Is.EqualTo("Updated Genre"));
             Assert.That(albumInDb.Year, Is.EqualTo(2025));
-            Assert.That(albumInDb.Price, Is.EqualTo(19.99m));
+            Assert.That(albumInDb.Price, Is.EqualTo(19));
             Assert.That(albumInDb.Stock, Is.EqualTo(15));
         }
 
@@ -182,7 +182,7 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(result.Artist, Is.EqualTo("Updated Artist"));
             Assert.That(result.Genre, Is.EqualTo("Updated Genre"));
             Assert.That(result.Year, Is.EqualTo(2025));
-            Assert.That(result.Price, Is.EqualTo(19.99m));
+            Assert.That(result.Price, Is.EqualTo(19));
             Assert.That(result.Stock, Is.EqualTo(15));
         }
 
@@ -202,5 +202,34 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(albumInDb, Is.Null);
 
         }
+        [Test]
+        public async Task GetAlbumsByArtistAsync_WhenArtistExists_ReturnsOnlyMatchingAlbums()
+        {
+            //Arrange
+            var artistToFind = "Artist A";
+            _context.Albums.Add(new Album { Title = "Album 1", Artist = artistToFind, Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 });
+            _context.Albums.Add(new Album { Title = "Album 2", Artist = "Artist B", Genre = "Genre 2", Year = 2023, Price = 14, Stock = 12 });
+            _context.Albums.Add(new Album { Title = "Album 3", Artist = artistToFind, Genre = "Genre 3", Year = 2022, Price = 13, Stock = 8 });
+            await _context.SaveChangesAsync();
+            //Act
+            var result = await _albumRepository.GetAlbumsByArtistAsync(artistToFind);
+            //Assert
+            var resultList = result.ToList();
+            Assert.That(resultList.Count, Is.EqualTo(2));
+            Assert.That(resultList.All(a => a.Artist == artistToFind), Is.True);
+            Assert.That(resultList.Any(a => a.Title == "Album 1"), Is.True);
+            Assert.That(resultList.Any(a=> a.Title == "Album 3"), Is.True);
+        }
+
+        [Test]
+        public async Task GetAlbumsByArtistAsync_WhenArtistDoesNotExist_ReturnsEmptyCollection()
+        {
+            // Act
+            var result = await _albumRepository.GetAlbumsByArtistAsync("NonExistentArtist");
+
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
+
     }
 }

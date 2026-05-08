@@ -188,5 +188,54 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(notFoundResult, Is.Not.Null);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
         }
+
+        [Test]
+        public async Task GetAllAlbumsByArtist_ReturnAlbums_WhenArtistExists()
+        {
+            //Arrange
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
+            _albumServiceMoq.Setup(repo => repo.GetAlbumsByArtistAsync("Artist 1")).ReturnsAsync(new List<Album> { album });
+
+            //Act
+            var result = await _albumController.GetAlbumsByArtist("Artist 1");
+
+            //Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+
+            var albums = okResult.Value as List<Album>;
+            Assert.That(albums, Is.Not.Null);
+            Assert.That(albums.Count, Is.EqualTo(1));
+            Assert.That(albums[0].Title, Is.EqualTo("Album 1"));
+        }
+
+        [Test]
+        public async Task GetAllAlbumsByArtist_ReturnsEmptyList_WhenArtistDoesNotExist()
+        {
+            //Arrange
+            _albumServiceMoq.Setup(repo => repo.GetAlbumsByArtistAsync("NonExistent Artist")).ReturnsAsync(new List<Album>());
+            //Act
+            var result = await _albumController.GetAlbumsByArtist("NonExistent Artist");
+            //Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            var albums = okResult.Value as List<Album>;
+            Assert.That(albums, Is.Not.Null);
+            Assert.That(albums.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task GetByArtist_ReturnsBadRequest_WhenArtistNameIsEmpty()
+        {
+            // Act
+            var result = await _albumController.GetAlbumsByArtist("");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
     }
 }
