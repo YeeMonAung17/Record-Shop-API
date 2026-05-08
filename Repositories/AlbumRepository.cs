@@ -15,8 +15,8 @@ namespace Record_Shop.Repositories
 
         public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
         {
-           
-                return await _recordDbContext.Albums.ToListAsync();
+
+            return await _recordDbContext.Albums.ToListAsync();
         }
 
         public async Task<Album?> GetAlbumByIdAsync(int id)
@@ -28,9 +28,9 @@ namespace Record_Shop.Repositories
 
         public async Task<Album> AddAlbumAsync(Album album)
         {
-            
-                await _recordDbContext.Albums.AddAsync(album);
-                await _recordDbContext.SaveChangesAsync();
+
+            await _recordDbContext.Albums.AddAsync(album);
+            await _recordDbContext.SaveChangesAsync();
             return album;
 
         }
@@ -40,27 +40,32 @@ namespace Record_Shop.Repositories
             _recordDbContext.Albums.Update(album);
             await _recordDbContext.SaveChangesAsync();
             return album;
-            
+
         }
 
         public async Task<bool> DeleteAlbumAsync(int id)
         {
-            
-                var album = await _recordDbContext.Albums.FindAsync(id);
-                if (album == null)
-                {
-                    return false;
-                }
+
+            var album = await _recordDbContext.Albums.FindAsync(id);
+            if (album == null)
+            {
+                return false;
+            }
 
             _recordDbContext.Albums.Remove(album);
             await _recordDbContext.SaveChangesAsync();
             return true;
-            
+
         }
 
         public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(string artist)
         {
             return await _recordDbContext.Albums.Where(a => a.Artist == artist).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByYearAsync(int year)
+        {
+            return await _recordDbContext.Albums.Where(a => a.Year == year).ToListAsync();
         }
     }
 }

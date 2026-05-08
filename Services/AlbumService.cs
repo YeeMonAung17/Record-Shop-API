@@ -62,5 +62,14 @@ namespace Record_Shop.Services
             }
             return await _albumRepository.GetAlbumsByArtistAsync(artist);
         }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByYearAsync(int year)
+        {
+            if (year <= 0)
+            {
+                throw new ArgumentException("Year must be a positive integer", nameof(year));
+            }
+            return await _albumRepository.GetAlbumsByYearAsync(year);
+        }
     }
 }

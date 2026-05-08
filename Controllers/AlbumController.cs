@@ -45,6 +45,17 @@ namespace Record_Shop.Controllers
             return Ok(albums.ToList());
         }
 
+        [HttpGet("year/{year}")]
+        public async Task<IActionResult> GetAlbumsByYear(int year)
+        {
+            var albums = await _albumService.GetAlbumsByYearAsync(year);
+            if (year <= 0)
+            {
+                return BadRequest("Year must be a positive integer.");
+            }
+            return Ok(albums.ToList());
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddAlbum([FromBody] Album album)
         {
