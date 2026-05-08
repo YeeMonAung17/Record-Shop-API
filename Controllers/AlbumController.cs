@@ -34,6 +34,17 @@ namespace Record_Shop.Controllers
             return Ok(album);
         }
 
+        [HttpGet("artist/{artist}")]
+        public async Task<IActionResult> GetAlbumsByArtist(string artist)
+        {
+            var albums = await _albumService.GetAlbumsByArtistAsync(artist);
+            if (string.IsNullOrWhiteSpace(artist))
+            {
+                return BadRequest("Artist name is required."); 
+            }
+            return Ok(albums.ToList());
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddAlbum([FromBody] Album album)
         {

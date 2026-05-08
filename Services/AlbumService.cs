@@ -4,7 +4,7 @@ using Record_Shop.Repositories;
 namespace Record_Shop.Services
 {
     public class AlbumService : IAlbumService
-    { 
+    {
         private readonly IAlbumRepository _albumRepository;
 
         public AlbumService(IAlbumRepository albumRepository)
@@ -14,7 +14,7 @@ namespace Record_Shop.Services
 
         public async Task<IEnumerable<Album>> GetAllAlbumsAsync()
         {
-           return await _albumRepository.GetAllAlbumsAsync();
+            return await _albumRepository.GetAllAlbumsAsync();
         }
 
         public async Task<Album?> GetAlbumByIdAsync(int id)
@@ -24,19 +24,19 @@ namespace Record_Shop.Services
 
         public async Task<Album> AddAlbumAsync(Album album)
         {
-           return await _albumRepository.AddAlbumAsync(album);
+            return await _albumRepository.AddAlbumAsync(album);
         }
 
 
         public async Task<Album?> UpdateAlbumAsync(int id, Album album)
         {
-            
+
             var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
             if (existingAlbum == null)
             {
                 return null;
-            }           
-           
+            }
+
             existingAlbum.Title = album.Title;
             existingAlbum.Artist = album.Artist;
             existingAlbum.Genre = album.Genre;
@@ -50,8 +50,17 @@ namespace Record_Shop.Services
 
         public async Task<bool> DeleteAlbumAsync(int id)
         {
-           
+
             return await _albumRepository.DeleteAlbumAsync(id);
+        }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(string artist)
+        {
+            if (string.IsNullOrWhiteSpace(artist))
+            {
+                throw new ArgumentException("Artist name cannot be empty", nameof(artist));
+            }
+            return await _albumRepository.GetAlbumsByArtistAsync(artist);
         }
     }
 }

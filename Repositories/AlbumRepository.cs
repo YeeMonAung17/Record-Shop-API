@@ -57,5 +57,10 @@ namespace Record_Shop.Repositories
             return true;
             
         }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(string artist)
+        {
+            return await _recordDbContext.Albums.Where(a => a.Artist == artist).ToListAsync();
+        }
     }
 }
