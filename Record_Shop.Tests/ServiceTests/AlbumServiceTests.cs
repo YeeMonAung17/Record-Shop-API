@@ -190,7 +190,7 @@ namespace Record_Shop.Tests.ServiceTests
 
         [TestCase("")]
         [TestCase(" ")]
-        
+
         public async Task GetAlbumsByArtistAsync_ShouldThrowException_WhenInvalidArtistName(string invalidArtistName)
         {
             //Arrange
@@ -201,7 +201,17 @@ namespace Record_Shop.Tests.ServiceTests
             _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Never);
 
         }
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-100)]
+        public async Task GetAlbumsByYearAsync_ShouldThrowException_WhenYearIsInvalid(int year)
+        {
+            //Arrange
+            var service = new AlbumService(_albumRepositoryMoq.Object);
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () => await service.GetAlbumsByYearAsync(year));
+            //Assert
+            _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Never);
+        }
     }
-
     }
 

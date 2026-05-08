@@ -237,5 +237,41 @@ namespace Record_Shop.Tests.ControllerTests
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
+
+        [Test]
+        public async Task GetAlbumsByYear_Returns200OK_WhenYearIsValid()
+        {
+            // Arrange
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
+            _albumServiceMoq.Setup(repo => repo.GetAlbumsByYearAsync(2021)).ReturnsAsync(new List<Album> { album });
+            // Act
+            var result = await _albumController.GetAlbumsByYear(2021);
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            var albums = okResult.Value as List<Album>;
+            Assert.That(albums, Is.Not.Null);
+            Assert.That(albums.Count, Is.EqualTo(1));
+            Assert.That(albums[0].Title, Is.EqualTo("Album 1"));
+        }
+
+        [Test]
+        public async Task GetAlbumsByYears_ReturnsEmptyList_WhenNoAlbumsExistsInGivenYear()
+        {
+            // Arrange
+            _albumServiceMoq.Setup(repo => repo.GetAlbumsByYearAsync(1990)).ReturnsAsync(new List<Album>());
+            // Act
+            var result = await _albumController.GetAlbumsByYear(1990);
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            var albums = okResult.Value as List<Album>;
+            Assert.That(albums, Is.Not.Null);
+            Assert.That(albums.Count, Is.EqualTo(0));
+        }
     }
 }

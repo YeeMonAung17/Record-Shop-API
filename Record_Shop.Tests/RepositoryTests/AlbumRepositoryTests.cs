@@ -231,5 +231,34 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(result, Is.Empty);
         }
 
+        [Test]
+        public async Task GetAlbumsByYearAsync_ReturnsMatchingAlbums_WhenYearExists()
+        {
+            //Arrange
+            var yearToFind = 2022;
+            _context.Albums.Add(new Album { Title = "Album 1", Artist = "Artist A", Genre = "Genre 1", Year = yearToFind, Price = 12, Stock = 10 });
+            _context.Albums.Add(new Album { Title = "Album 2", Artist = "Artist B", Genre = "Genre 2", Year = 2023, Price = 14, Stock = 12 });
+            _context.Albums.Add(new Album { Title = "Album 3", Artist = "Artist C", Genre = "Genre 3", Year = yearToFind, Price = 13, Stock = 8 });
+            await _context.SaveChangesAsync();
+            //Act
+            var result = await _albumRepository.GetAlbumsByYearAsync(yearToFind);
+            //Assert
+            var resultList = result.ToList();
+            Assert.That(resultList.Count, Is.EqualTo(2));
+            Assert.That(resultList.All(a => a.Year == yearToFind), Is.True);
+            Assert.That(resultList.Any(a => a.Title == "Album 1"), Is.True);
+            Assert.That(resultList.Any(a => a.Title == "Album 3"), Is.True);
+        }
+
+        [Test]
+        public async Task GetAlbumsByYearAsync_WhenYearDoesNotExist_ReturnsEmptyCollection()
+        {
+            // Act
+            var result = await _albumRepository.GetAlbumsByYearAsync(9999);
+
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
+
     }
 }
