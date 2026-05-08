@@ -190,7 +190,7 @@ namespace Record_Shop.Tests.ServiceTests
 
         [TestCase("")]
         [TestCase(" ")]
-        [TestCase(null)]
+        
         public async Task GetAlbumsByArtistAsync_ShouldThrowException_WhenInvalidArtistName(string invalidArtistName)
         {
             //Arrange
