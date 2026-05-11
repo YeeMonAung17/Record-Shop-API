@@ -260,5 +260,46 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(result, Is.Empty);
         }
 
+        [Test]
+        public async Task GetAlbumsByGenreAsync_ReturnsMatchingAlbums_WhenGenreExists()
+        {
+            //Arrange
+            var genreToFind = "Rock";
+            _context.Albums.Add(new Album { Title = "Album 1", Artist = "Artist A", Genre = genreToFind, Year = 2021, Price = 12, Stock = 10 });
+            _context.Albums.Add(new Album { Title = "Album 2", Artist = "Artist B", Genre = "Pop", Year = 2023, Price = 14, Stock = 12 });
+            _context.Albums.Add(new Album { Title = "Album 3", Artist = "Artist C", Genre = genreToFind, Year = 2022, Price = 13, Stock = 8 });
+            await _context.SaveChangesAsync();
+            //Act
+            var result = await _albumRepository.GetAlbumsByGenreAsync(genreToFind);
+            //Assert
+            var resultList = result.ToList();
+            Assert.That(resultList.Count, Is.EqualTo(2));
+            Assert.That(resultList.All(a => a.Genre == genreToFind), Is.True);
+            Assert.That(resultList.Any(a => a.Title == "Album 1"), Is.True);
+            Assert.That(resultList.Any(a => a.Title == "Album 3"), Is.True);
+        }
+
+        [Test]
+        public async Task GetAlbumsByGenreAsync_ReturnsEmptyList_WhenNoMatches()
+        {
+            //Arrange
+            _context.Albums.Add(new Album { Title = "Album 1", Artist = "Artist A", Genre = "Rock", Year = 2021, Price = 12, Stock = 10 });
+            _context.Albums.Add(new Album { Title = "Album 2", Artist = "Artist B", Genre = "Pop", Year = 2023, Price = 14, Stock = 12 });
+            await _context.SaveChangesAsync();
+            //Act
+            var result = await _albumRepository.GetAlbumsByGenreAsync("NonExistentGenre");
+            //Assert
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public async Task GetAlbumsByGenreAsync_ReturnsEmptyList_WhenDatabaseIsEmpty()
+        {
+            // Act
+            var result = await _albumRepository.GetAlbumsByGenreAsync("AnyGenre");
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
+
     }
 }

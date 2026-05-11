@@ -212,6 +212,52 @@ namespace Record_Shop.Tests.ServiceTests
             //Assert
             _albumRepositoryMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<Album>()), Times.Never);
         }
+
+        [Test]
+        public async Task GetAlbumsByGenreAsync_ReturnsAlbumsFromRepository()
+        {
+            //Arrange
+            var genre = "Rock";
+            var fakeAlbums = new List<Album>
+            {
+                new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Rock", Year = 2020, Price = 15, Stock = 5 },
+                new Album { Id = 2, Title = "Album 2", Artist = "Artist 2", Genre = "Rock", Year = 2021, Price = 16, Stock = 3 }
+            };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumsByGenreAsync(genre)).ReturnsAsync(fakeAlbums);
+            //Act
+            var result = await _albumService.GetAlbumsByGenreAsync(genre);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Count(), Is.EqualTo(2));
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumsByGenreAsync(genre), Times.Once);
+        }
+
+
+        [Test]
+        public async Task GetAlbumsByGenreAsync_ReturnsEmptyList_WhenRepositoryReturnsEmpty()
+        {
+            //Arrange
+            var genre = "NonExistingGenre";
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumsByGenreAsync(genre)).ReturnsAsync(new List<Album>());
+            //Act
+            var result = await _albumService.GetAlbumsByGenreAsync(genre);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Empty);
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumsByGenreAsync(genre), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAlbumsByGenreAsync_CallsRepositoryWithCorrectGenre()
+        {
+            //Arrange
+            var genre = "Jazz";
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumsByGenreAsync(genre)).ReturnsAsync(new List<Album>());
+            //Act
+            var result = await _albumService.GetAlbumsByGenreAsync(genre);
+            //Assert
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumsByGenreAsync(genre), Times.Once);
+        }
     }
     }
 
