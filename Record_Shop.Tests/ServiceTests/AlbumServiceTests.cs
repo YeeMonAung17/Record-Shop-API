@@ -258,6 +258,50 @@ namespace Record_Shop.Tests.ServiceTests
             //Assert
             _albumRepositoryMoq.Verify(repo => repo.GetAlbumsByGenreAsync(genre), Times.Once);
         }
+
+        [Test]
+        public async Task GetAlbumByTitleAsync_ReturnsAlbum_WhenRepositoryReturnsData()
+        {
+            //Arrange
+            var title = "Album 1";
+            var album = new Album { Id = 1, Title = title, Artist = "Artist 1", Genre = "Genre 1", Year = 2020, Price = 15, Stock = 5 };
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByTitleAsync(title)).ReturnsAsync(album);
+            //Act
+            var result = await _albumService.GetAlbumByTitleAsync(title);
+            //Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Title, Is.EqualTo(title));
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumByTitleAsync(title), Times.Once);
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public async Task GetAlbumByTitleAsync_ThrowsArgumentException_WhenTitleIsInvalid(string? invalidTitle)
+        {
+            var service = new AlbumService(_albumRepositoryMoq.Object);
+
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
+                await service.GetAlbumByTitleAsync(invalidTitle!));
+
+            Assert.That(exception.Message, Does.Contain("cannot be empty")); // Using Contain is safer than EqualTo
+
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumByTitleAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public async Task GetAlbumByTitleAsync_ReturnsNull_WhenRepositoryReturnsNull()
+        {
+            //Arrange
+            var title = "NonExistingAlbum";
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByTitleAsync(title)).ReturnsAsync((Album?)null);
+            //Act
+            var result = await _albumService.GetAlbumByTitleAsync(title);
+            //Assert
+            Assert.That(result, Is.Null);
+            _albumRepositoryMoq.Verify(repo => repo.GetAlbumByTitleAsync(title), Times.Once);
+        }
     }
     }
 

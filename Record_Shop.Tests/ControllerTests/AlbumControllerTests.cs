@@ -322,6 +322,49 @@ namespace Record_Shop.Tests.ControllerTests
             // Assert
             _albumServiceMoq.Verify(repo => repo.GetAlbumsByGenreAsync(genre), Times.Once);
         }
+        [Test]
+        public async Task GetAlbumByTitle_Returns200Ok_WhenAlbumExists()
+        {
+            // Arrange
+            var album = new Album { Id = 1, Title = "Album 1", Artist = "Artist 1", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 };
+            _albumServiceMoq.Setup(repo => repo.GetAlbumByTitleAsync("Album 1")).ReturnsAsync(album);
+            // Act
+            var result = await _albumController.GetAlbumByTitle("Album 1");
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult, Is.Not.Null);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            var returnedAlbum = okResult.Value as Album;
+            Assert.That(returnedAlbum, Is.Not.Null);
+            Assert.That(returnedAlbum.Title, Is.EqualTo("Album 1"));
+        }
+        [Test]
+        public async Task GetAlbumByTitle_Returns404NotFound_WhenAlbumDoesNotExist()
+        {
+            // Arrange
+            _albumServiceMoq.Setup(repo => repo.GetAlbumByTitleAsync("NonExistent Album")).ReturnsAsync((Album?)null);
+            // Act
+            var result = await _albumController.GetAlbumByTitle("NonExistent Album");
+            // Assert
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
 
+        [Test]
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public async Task GetAlbumByTitle_ReturnsBadRequest_WhenTitleIsInvalid(string? invalidTitle)
+        {
+            // Act
+            var result = await _albumController.GetAlbumByTitle(invalidTitle);
+            // Assert
+            var badRequestResult = result as BadRequestObjectResult;
+            Assert.That(badRequestResult, Is.Not.Null);
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
+
+            _albumServiceMoq.Verify(repo => repo.GetAlbumByTitleAsync(It.IsAny<string>()), Times.Never);
+
+        }
     }
 }

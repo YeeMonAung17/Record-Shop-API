@@ -301,5 +301,42 @@ namespace Record_Shop.Tests.RepositoryTests
             Assert.That(result, Is.Empty);
         }
 
+        [Test]
+        public async Task GetAlbumByTitleAsync_ReturnsCorrectAlbum_WhenExactMatchExists()
+        {
+            // Arrange
+            var titleToFind = "Unique Album Title";
+            _context.Albums.Add(new Album { Title = titleToFind, Artist = "Artist A", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 });
+            _context.Albums.Add(new Album { Title = "Another Album", Artist = "Artist B", Genre = "Genre 2", Year = 2023, Price = 14, Stock = 12 });
+            await _context.SaveChangesAsync();
+            // Act
+            var result = await _albumRepository.GetAlbumByTitleAsync(titleToFind);
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Title, Is.EqualTo(titleToFind));
+        }
+
+        [Test]
+        public async Task GetAlbumByTitleAsync_IsCaseInsensitive()
+        {
+            // Arrange
+            var titleToFind = "Case Insensitive Title";
+            _context.Albums.Add(new Album { Title = titleToFind, Artist = "Artist A", Genre = "Genre 1", Year = 2021, Price = 12, Stock = 10 });
+            await _context.SaveChangesAsync();
+            // Act
+            var result = await _albumRepository.GetAlbumByTitleAsync("case insensitive title");
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Title, Is.EqualTo(titleToFind));
+        }
+        [Test]
+        public async Task GetAlbumByTitleAsync_ReturnsNull_WhenTitleDoesNotExist()
+        {
+                       // Act
+            var result = await _albumRepository.GetAlbumByTitleAsync("NonExistentTitle");
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+
     }
 }
