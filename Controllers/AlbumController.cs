@@ -56,6 +56,17 @@ namespace Record_Shop.Controllers
             return Ok(albums.ToList());
         }
 
+        [HttpGet("genre/{genre}")]
+        public async Task<IActionResult> GetAlbumsByGenre(string genre)
+        {
+            var albums = await _albumService.GetAlbumsByGenreAsync(genre);
+                        if (string.IsNullOrWhiteSpace(genre))
+            {
+                return BadRequest("Genre is required."); 
+            }
+            return Ok(albums.ToList());
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddAlbum([FromBody] Album album)
         {

@@ -67,5 +67,10 @@ namespace Record_Shop.Repositories
         {
             return await _recordDbContext.Albums.Where(a => a.Year == year).ToListAsync();
         }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByGenreAsync(string genre)
+        {
+            return await _recordDbContext.Albums.Where(a=> a.Genre == genre).ToListAsync();
+        }
     }
 }

@@ -71,5 +71,14 @@ namespace Record_Shop.Services
             }
             return await _albumRepository.GetAlbumsByYearAsync(year);
         }
+
+        public async Task<IEnumerable<Album>> GetAlbumsByGenreAsync(string genre)
+        {
+                       if (string.IsNullOrWhiteSpace(genre))
+            {
+                throw new ArgumentException("Genre cannot be empty", nameof(genre));
+            }
+            return await _albumRepository.GetAlbumsByGenreAsync(genre);
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace Record_Shop.Services
 
         Task<IEnumerable<Album>> GetAlbumsByYearAsync(int year);
 
+        Task<IEnumerable<Album>> GetAlbumsByGenreAsync(string genre);
         Task<Album> AddAlbumAsync(Album album);
         Task<Album?>UpdateAlbumAsync(int id, Album album);
         Task<bool> DeleteAlbumAsync(int id);

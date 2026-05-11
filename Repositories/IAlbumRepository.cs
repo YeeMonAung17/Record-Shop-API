@@ -8,7 +8,7 @@ namespace Record_Shop.Repositories
         Task<Album?> GetAlbumByIdAsync(int id);
         Task<IEnumerable<Album>> GetAlbumsByArtistAsync(string artist);
         Task<IEnumerable<Album>> GetAlbumsByYearAsync(int year);
-        //Task<IEnumerable<Album>> GetAlbumsByGenreAsync(string genre);
+        Task<IEnumerable<Album>> GetAlbumsByGenreAsync(string genre);
         //Task<Album?> GetAlbumByTitleAsync(string title);
         Task<Album> AddAlbumAsync(Album album);
         Task<Album> UpdateAlbumAsync(Album album);
