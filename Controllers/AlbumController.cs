@@ -22,7 +22,7 @@ namespace Record_Shop.Controllers
             return Ok(albums.ToList());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
 
         public async Task<IActionResult> GetAlbumById(int id)
         {
@@ -37,11 +37,12 @@ namespace Record_Shop.Controllers
         [HttpGet("artist/{artist}")]
         public async Task<IActionResult> GetAlbumsByArtist(string artist)
         {
-            var albums = await _albumService.GetAlbumsByArtistAsync(artist);
             if (string.IsNullOrWhiteSpace(artist))
             {
-                return BadRequest("Artist name is required."); 
+                return BadRequest("Artist name is required.");
             }
+            var albums = await _albumService.GetAlbumsByArtistAsync(artist);
+            
             return Ok(albums.ToList());
         }
 
@@ -65,6 +66,23 @@ namespace Record_Shop.Controllers
                 return BadRequest("Genre is required."); 
             }
             return Ok(albums.ToList());
+        }
+
+        [HttpGet("title/{title}")]
+        public async Task<IActionResult> GetAlbumByTitle(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                return BadRequest("Album title is required."); 
+            }
+
+            var album = await _albumService.GetAlbumByTitleAsync(title);
+
+            if (album == null)
+            {
+                return NotFound();
+            }
+            return Ok(album);
         }
 
         [HttpPost]
