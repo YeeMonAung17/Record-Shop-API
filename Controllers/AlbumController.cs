@@ -29,7 +29,11 @@ namespace Record_Shop.Controllers
             var album = await _albumService.GetAlbumByIdAsync(id);
             if (album == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    error = "Album not found",
+                    message = $"No album exists with id {id}"
+                });
             }
             return Ok(album);
         }
@@ -103,10 +107,25 @@ namespace Record_Shop.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var updatedAlbum = await _albumService.UpdateAlbumAsync(id, album);
+
+            if (album.Id != id)
+            {
+                return BadRequest(new
+                {
+                    error = "Id mismatch",
+                    message = "The album id in the URL does not match the album id in the request body."
+                });
+            }
+
+                var updatedAlbum = await _albumService.UpdateAlbumAsync(id, album);
+
             if (updatedAlbum == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    error = "Album not found",
+                    message = $"Cannot update album with id {id} because it does not exist."
+                });
             }
             return Ok(updatedAlbum);
         }
@@ -114,11 +133,17 @@ namespace Record_Shop.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)
         {
-            var result = await _albumService.DeleteAlbumAsync(id);
-            if (!result)
+            var deleted = await _albumService.DeleteAlbumAsync(id);
+
+            if (!deleted)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    error = "Album not found",
+                    message = $"Cannot delete album with id {id} because it does not exist."
+                });
             }
+
             return NoContent();
         }
     }
