@@ -44,7 +44,10 @@ namespace Record_Shop
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            //app.UseHttpsRedirection();
             //app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<ExceptionHandlerMiddleware>();
