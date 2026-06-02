@@ -47,8 +47,6 @@ namespace Record_Shop
 
             app.UseStaticFiles();
 
-            //app.UseHttpsRedirection();
-            //app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 

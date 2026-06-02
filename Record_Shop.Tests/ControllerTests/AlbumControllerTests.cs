@@ -62,7 +62,7 @@ namespace Record_Shop.Tests.ControllerTests
             //Act
             var result = await _albumController.GetAlbumById(1);
             //Assert
-            Assert.That(result, Is.TypeOf<NotFoundResult>());
+            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
         }
 
         [Test]
@@ -150,8 +150,8 @@ namespace Record_Shop.Tests.ControllerTests
             var result = await _albumController.UpdateAlbum(albumId, updatedAlbum);
 
             //Assert
-            Assert.That(result, Is.InstanceOf<NotFoundResult>());
-            var notFoundResult = result as NotFoundResult;
+            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
+            var notFoundResult = result as NotFoundObjectResult;
             Assert.That(notFoundResult, Is.Not.Null);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
         }
@@ -183,8 +183,8 @@ namespace Record_Shop.Tests.ControllerTests
             var result = await _albumController.DeleteAlbum(99);
 
             //Assert
-            Assert.That(result, Is.InstanceOf<NotFoundResult>());
-            var notFoundResult = result as NotFoundResult;
+            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
+            var notFoundResult = result as NotFoundObjectResult;
             Assert.That(notFoundResult, Is.Not.Null);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
         }

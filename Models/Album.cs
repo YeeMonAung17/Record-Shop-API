@@ -21,8 +21,8 @@ namespace Record_Shop.Models
         [Range(1900, 2100, ErrorMessage = "Year must be between 1900 and 2100.")]
         public int Year { get; set; }
 
-        [Range(0, 9999, ErrorMessage = "Price must be a non-negative value.")]
-        public int Price { get; set; }
+        [Range(0, 9999.99, ErrorMessage = "Price must be a non-negative value.")]
+        public decimal Price { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Stock must be a non-negative value.")]
         public int Stock { get; set; }

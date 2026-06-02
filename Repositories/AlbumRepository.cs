@@ -40,22 +40,18 @@ namespace Record_Shop.Repositories
             _recordDbContext.Albums.Update(album);
             await _recordDbContext.SaveChangesAsync();
             return album;
-
         }
 
         public async Task<bool> DeleteAlbumAsync(int id)
         {
-
             var album = await _recordDbContext.Albums.FindAsync(id);
             if (album == null)
             {
                 return false;
             }
-
             _recordDbContext.Albums.Remove(album);
             await _recordDbContext.SaveChangesAsync();
             return true;
-
         }
 
         public async Task<IEnumerable<Album>> GetAlbumsByArtistAsync(string artist)

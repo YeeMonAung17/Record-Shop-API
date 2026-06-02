@@ -27,16 +27,13 @@ namespace Record_Shop.Services
             return await _albumRepository.AddAlbumAsync(album);
         }
 
-
         public async Task<Album?> UpdateAlbumAsync(int id, Album album)
         {
-
             var existingAlbum = await _albumRepository.GetAlbumByIdAsync(id);
             if (existingAlbum == null)
             {
                 return null;
             }
-
             existingAlbum.Title = album.Title;
             existingAlbum.Artist = album.Artist;
             existingAlbum.Genre = album.Genre;

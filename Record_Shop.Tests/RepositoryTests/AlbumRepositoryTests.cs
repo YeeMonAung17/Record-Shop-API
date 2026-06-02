@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Record_Shop.Controllers;
 using Record_Shop.Data;
 using Record_Shop.Models;
 using Record_Shop.Repositories;
-using Record_Shop.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
