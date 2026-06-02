@@ -36,6 +36,7 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(okResult.StatusCode, Is.EqualTo(200));
             var returnedAlbums = okResult.Value as List<Album>;
             Assert.That(returnedAlbums, Is.EquivalentTo(albums));
+            _albumServiceMoq.Verify(repo => repo.GetAllAlbumsAsync(), Times.Once);
         }
 
         [Test]
@@ -51,6 +52,8 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(okResult.StatusCode, Is.EqualTo(200));
             var returnedAlbum = okResult.Value as Album;
             Assert.That(returnedAlbum, Is.EqualTo(album));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumByIdAsync(1), Times.Once);
+
         }
 
         [Test]
@@ -63,6 +66,7 @@ namespace Record_Shop.Tests.ControllerTests
             var result = await _albumController.GetAlbumById(1);
             //Assert
             Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
+            _albumServiceMoq.Verify(repo => repo.GetAlbumByIdAsync(1), Times.Once);
         }
 
         [Test]
@@ -83,6 +87,7 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(returnedAlbum, Is.Not.Null);
             Assert.That(returnedAlbum.Id, Is.EqualTo(createdAlbum.Id));
             Assert.That(returnedAlbum.Title, Is.EqualTo(createdAlbum.Title));
+            _albumServiceMoq.Verify(repo => repo.AddAlbumAsync(It.IsAny<Album>()), Times.Once);
         }
         [Test]
         public async Task AddAlbum_ReturnsBadRequest_WhenModelStateIsInvalid()
@@ -99,6 +104,7 @@ namespace Record_Shop.Tests.ControllerTests
             var badRequestResult = result as BadRequestObjectResult;
             Assert.That(badRequestResult, Is.Not.Null);
             Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
+            _albumServiceMoq.Verify(repo => repo.AddAlbumAsync(It.IsAny<Album>()),Times.Never);
         }
         [Test]
         public async Task UpdateAlbum_Returns201Created_WhenUpdateIsSuccessful()
@@ -117,7 +123,7 @@ namespace Record_Shop.Tests.ControllerTests
 
             var actualAlbum = actionResult.Value as Album;
             Assert.That(actualAlbum.Title, Is.EqualTo(updatedAlbum.Title));
-
+            _albumServiceMoq.Verify(repo => repo.UpdateAlbumAsync(albumId, updatedAlbum),Times.Once);
 
         }
         [Test]
@@ -136,7 +142,7 @@ namespace Record_Shop.Tests.ControllerTests
             var badRequestResult = result as BadRequestObjectResult;
             Assert.That(badRequestResult, Is.Not.Null);
             Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
-
+            _albumServiceMoq.Verify(repo => repo.UpdateAlbumAsync(It.IsAny<int>(), It.IsAny<Album>()),Times.Never);
         }
         [Test]
         public async Task UpdateAlbum_Returns404NotFound_WhenAlbumDoesNotExist()
@@ -154,6 +160,7 @@ namespace Record_Shop.Tests.ControllerTests
             var notFoundResult = result as NotFoundObjectResult;
             Assert.That(notFoundResult, Is.Not.Null);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
+            _albumServiceMoq.Verify(repo => repo.UpdateAlbumAsync(albumId, updatedAlbum),Times.Once);
         }
 
         [Test]
@@ -171,6 +178,7 @@ namespace Record_Shop.Tests.ControllerTests
             var noContentResult = result as NoContentResult;
             Assert.That(noContentResult, Is.Not.Null);
             Assert.That(noContentResult.StatusCode, Is.EqualTo(204));
+            _albumServiceMoq.Verify(repo => repo.DeleteAlbumAsync(albumId), Times.Once);
         }
 
         [Test]
@@ -187,6 +195,7 @@ namespace Record_Shop.Tests.ControllerTests
             var notFoundResult = result as NotFoundObjectResult;
             Assert.That(notFoundResult, Is.Not.Null);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
+            _albumServiceMoq.Verify(repo => repo.DeleteAlbumAsync(99), Times.Once);
         }
 
         [Test]
@@ -209,6 +218,7 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(albums, Is.Not.Null);
             Assert.That(albums.Count, Is.EqualTo(1));
             Assert.That(albums[0].Title, Is.EqualTo("Album 1"));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByArtistAsync("Artist 1"),Times.Once);
         }
 
         [Test]
@@ -226,6 +236,7 @@ namespace Record_Shop.Tests.ControllerTests
             var albums = okResult.Value as List<Album>;
             Assert.That(albums, Is.Not.Null);
             Assert.That(albums.Count, Is.EqualTo(0));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByArtistAsync("NonExistent Artist"),Times.Once);
         }
 
         [Test]
@@ -236,6 +247,7 @@ namespace Record_Shop.Tests.ControllerTests
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByArtistAsync(It.IsAny<string>()),Times.Never);
         }
 
         [Test]
@@ -255,6 +267,7 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(albums, Is.Not.Null);
             Assert.That(albums.Count, Is.EqualTo(1));
             Assert.That(albums[0].Title, Is.EqualTo("Album 1"));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByYearAsync(2021),Times.Once);
         }
 
         [Test]
@@ -272,6 +285,7 @@ namespace Record_Shop.Tests.ControllerTests
             var albums = okResult.Value as List<Album>;
             Assert.That(albums, Is.Not.Null);
             Assert.That(albums.Count, Is.EqualTo(0));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByYearAsync(1990),Times.Once);
         }
 
         [Test]
@@ -291,6 +305,7 @@ namespace Record_Shop.Tests.ControllerTests
             Assert.That(albums, Is.Not.Null);
             Assert.That(albums.Count, Is.EqualTo(1));
             Assert.That(albums[0].Title, Is.EqualTo("Album 1"));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByGenreAsync("Genre 1"),Times.Once);
         }
 
         [Test]
@@ -308,11 +323,11 @@ namespace Record_Shop.Tests.ControllerTests
             var albums = okResult.Value as List<Album>;
             Assert.That(albums, Is.Not.Null);
             Assert.That(albums.Count, Is.EqualTo(0));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumsByGenreAsync("NonExistent Genre"),Times.Once);
         }
 
         [Test]
         public async Task GetAlbumsByGenre_CallsServiceWithCorrectGenre()
-
         {
             // Arrange
             string genre = "Rock";
@@ -338,6 +353,7 @@ namespace Record_Shop.Tests.ControllerTests
             var returnedAlbum = okResult.Value as Album;
             Assert.That(returnedAlbum, Is.Not.Null);
             Assert.That(returnedAlbum.Title, Is.EqualTo("Album 1"));
+            _albumServiceMoq.Verify(repo => repo.GetAlbumByTitleAsync("Album 1"),Times.Once);
         }
         [Test]
         public async Task GetAlbumByTitle_Returns404NotFound_WhenAlbumDoesNotExist()
@@ -348,6 +364,7 @@ namespace Record_Shop.Tests.ControllerTests
             var result = await _albumController.GetAlbumByTitle("NonExistent Album");
             // Assert
             Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            _albumServiceMoq.Verify(repo => repo.GetAlbumByTitleAsync("NonExistent Album"), Times.Once);
         }
 
         [Test]

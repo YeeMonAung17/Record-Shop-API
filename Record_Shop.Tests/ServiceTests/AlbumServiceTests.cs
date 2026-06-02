@@ -302,6 +302,19 @@ namespace Record_Shop.Tests.ServiceTests
             Assert.That(result, Is.Null);
             _albumRepositoryMoq.Verify(repo => repo.GetAlbumByTitleAsync(title), Times.Once);
         }
+        [Test]
+        public async Task DeleteAlbumAsync_ReturnsFalse_WhenAlbumDoesNotExist()
+        {
+            //Arrange
+            int albumId = 999; // Non-existing ID
+            _albumRepositoryMoq.Setup(repo => repo.GetAlbumByIdAsync(albumId)).ReturnsAsync((Album?)null);
+            //Act
+            var result = await _albumService.DeleteAlbumAsync(albumId);
+            //Assert
+            Assert.That(result, Is.False);
+            _albumRepositoryMoq.Verify(repo => repo.DeleteAlbumAsync(It.IsAny<int>()), Times.Once);
+        }
+
     }
-    }
+}
 
