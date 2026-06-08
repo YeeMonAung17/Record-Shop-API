@@ -22,11 +22,66 @@ namespace Record_Shop.Controllers
             return Ok(albums.ToList());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
 
         public async Task<IActionResult> GetAlbumById(int id)
         {
             var album = await _albumService.GetAlbumByIdAsync(id);
+            if (album == null)
+            {
+                return NotFound(new
+                {
+                    error = "Album not found",
+                    message = $"No album exists with id {id}"
+                });
+            }
+            return Ok(album);
+        }
+
+        [HttpGet("artist/{artist}")]
+        public async Task<IActionResult> GetAlbumsByArtist(string artist)
+        {
+            if (string.IsNullOrWhiteSpace(artist))
+            {
+                return BadRequest("Artist name is required.");
+            }
+            var albums = await _albumService.GetAlbumsByArtistAsync(artist);
+            
+            return Ok(albums.ToList());
+        }
+
+        [HttpGet("year/{year}")]
+        public async Task<IActionResult> GetAlbumsByYear(int year)
+        {
+            var albums = await _albumService.GetAlbumsByYearAsync(year);
+            if (year <= 0)
+            {
+                return BadRequest("Year must be a positive integer.");
+            }
+            return Ok(albums.ToList());
+        }
+
+        [HttpGet("genre/{genre}")]
+        public async Task<IActionResult> GetAlbumsByGenre(string genre)
+        {
+            var albums = await _albumService.GetAlbumsByGenreAsync(genre);
+                        if (string.IsNullOrWhiteSpace(genre))
+            {
+                return BadRequest("Genre is required."); 
+            }
+            return Ok(albums.ToList());
+        }
+
+        [HttpGet("title/{title}")]
+        public async Task<IActionResult> GetAlbumByTitle(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                return BadRequest("Album title is required."); 
+            }
+
+            var album = await _albumService.GetAlbumByTitleAsync(title);
+
             if (album == null)
             {
                 return NotFound();
@@ -52,10 +107,25 @@ namespace Record_Shop.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var updatedAlbum = await _albumService.UpdateAlbumAsync(id, album);
+
+            if (album.Id != id)
+            {
+                return BadRequest(new
+                {
+                    error = "Id mismatch",
+                    message = "The album id in the URL does not match the album id in the request body."
+                });
+            }
+
+                var updatedAlbum = await _albumService.UpdateAlbumAsync(id, album);
+
             if (updatedAlbum == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    error = "Album not found",
+                    message = $"Cannot update album with id {id} because it does not exist."
+                });
             }
             return Ok(updatedAlbum);
         }
@@ -63,11 +133,17 @@ namespace Record_Shop.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)
         {
-            var result = await _albumService.DeleteAlbumAsync(id);
-            if (!result)
+            var deleted = await _albumService.DeleteAlbumAsync(id);
+
+            if (!deleted)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    error = "Album not found",
+                    message = $"Cannot delete album with id {id} because it does not exist."
+                });
             }
+
             return NoContent();
         }
     }
